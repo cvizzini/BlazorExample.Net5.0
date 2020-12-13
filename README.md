@@ -1,6 +1,6 @@
 # Blazor WASM Application (with server-side prerendering) .Net 5.0
 
-The default Blazor .net 5 demo project updated to use prerendering.
+The default Blazor .net 5 demo project updated to use prerendering. As well as basic crud stored to [SQLite](https://www.sqlite.org/index.html) database
 
 
 ## Pre-Requisites
