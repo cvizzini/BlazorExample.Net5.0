@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Blazored.LocalStorage;
 using ExampleApp.Client.Data;
 using ExampleApp.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -20,9 +21,10 @@ namespace ExampleApp.Client
             builder.Services.AddScoped<IWeatherForecastService, WeatherForecastService>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>()
                 .AddScoped<IAlertService, AlertService>()
-                .AddScoped<IHttpService, HttpService>()
-                .AddScoped<ILocalStorageService, LocalStorageService>();
-            ;
+                .AddScoped<IHttpService, HttpService>();
+            builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
+
 
             builder.Services.AddScoped<ITokenHelper, TokenHelper>();
             builder.Services.AddOptions();

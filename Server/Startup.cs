@@ -51,8 +51,7 @@ namespace ExampleApp.Server
 
             InitialiseAuthenticationAndAuthorisation(services);
 
-            services.AddScoped<IWeatherForecastService, WeatherForecastDataAccessLayer>();            
-            services.AddScoped<ILocalStorageService, LocalStorageService>();
+            services.AddScoped<IWeatherForecastService, WeatherForecastDataAccessLayer>();             
             services.AddTransient<IEmployee, EmployeeDataAccessLayer>();
             services.AddServerSideBlazor();
 

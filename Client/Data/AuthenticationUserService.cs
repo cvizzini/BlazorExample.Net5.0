@@ -3,9 +3,11 @@ using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Blazored.LocalStorage;
 using ExampleApp.Shared;
 using ExampleApp.Shared.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace ExampleApp.Client.Data
 {
@@ -14,23 +16,34 @@ namespace ExampleApp.Client.Data
         private readonly IHttpService _httpClient;
         private readonly NavigationManager _navigationManager;
         private readonly ILocalStorageService _localStorageService;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
         private const string ROUTE = "/api/authenticate/";
         private string _userKey = "user";
 
         public AuthenticationUserService(IHttpService httpService,
             NavigationManager navigationManager,
-            ILocalStorageService localStorageService)
+            ILocalStorageService localStorageService,
+            AuthenticationStateProvider authenticationStateProvider)
         {
             _httpClient = httpService;
             _navigationManager = navigationManager;
             _localStorageService = localStorageService;
+            _authenticationStateProvider = authenticationStateProvider;
         }
 
         public async Task<AuthUser> Login(LoginModel model)
         {
             var tokenResponse = await _httpClient.Post<AuthUser>($"{ROUTE}login", model);
-            await _localStorageService.SetItem(_userKey, tokenResponse);
+            await _localStorageService.SetItemAsync("authToken", tokenResponse.Token);
+            ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(tokenResponse.UserName);
+
             return tokenResponse;
+        }
+
+        public async Task Logout()
+        {
+            await _localStorageService.RemoveItemAsync("authToken");
+            ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();         
         }
 
         public async Task<Response> Register(RegisterModel model)

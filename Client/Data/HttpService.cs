@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using ExampleApp.Client.Helpers;
 using ExampleApp.Shared.Models;
 using Microsoft.AspNetCore.Components;
@@ -139,10 +140,10 @@ namespace ExampleApp.Client.Data
         private async Task AddJwtHeader(HttpRequestMessage request)
         {
             // add jwt auth header if user is logged in and request is to the api url
-            var user = await _localStorageService.GetItem<AuthUser>("user");
+            var user = await _localStorageService.GetItemAsync<string>("authToken");
             var isApiUrl = !request.RequestUri.IsAbsoluteUri;
             if (user != null && isApiUrl)
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", user.Token);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", user);
         }
 
         private async Task HandleErrors(HttpResponseMessage response)
