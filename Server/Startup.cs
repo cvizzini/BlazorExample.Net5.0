@@ -3,15 +3,20 @@ using ExampleApp.Context.Context;
 using ExampleApp.Server.DataAccess;
 using ExampleApp.Server.Interfaces;
 using ExampleApp.Shared;
+using ExampleApp.Shared.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace ExampleApp.Server
 {
@@ -31,8 +36,9 @@ namespace ExampleApp.Server
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<EmployeeContext>(builder => builder.UseSqlite(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
-
+            //services.AddDbContext<EmployeeContext>(
+            //    builder => builder.UseSqlite(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
+            services.AddDbContext<EmployeeContext>(options => options.UseSqlite(connectionString));
 
             using (var sp = services.BuildServiceProvider())
             {
@@ -40,6 +46,8 @@ namespace ExampleApp.Server
                 if (context.Database.GetPendingMigrations().Any())
                     context.Database.Migrate();
             }
+
+            InitialiseAuthenticationAndAuthorisation(services);
 
             services.AddScoped<IWeatherForecastService, WeatherForecastDataAccessLayer>();
             services.AddTransient<IEmployee, EmployeeDataAccessLayer>();
@@ -49,6 +57,36 @@ namespace ExampleApp.Server
             {
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/octet-stream" });
+            });
+        }
+
+        private void InitialiseAuthenticationAndAuthorisation(IServiceCollection services)
+        {
+            // For Identity  
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<EmployeeContext>()
+                .AddDefaultTokenProviders();
+
+            // Adding Authentication  
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            // Adding Jwt Bearer  
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = Configuration["JWT:ValidAudience"],
+                    ValidIssuer = Configuration["JWT:ValidIssuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                };
             });
         }
 
@@ -72,6 +110,9 @@ namespace ExampleApp.Server
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
