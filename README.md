@@ -8,9 +8,11 @@ The default Blazor .net 5 demo project updated to use prerendering. As well as b
 Install .Net Core 5.0
 Update Visual Studio to version 16.8 or greater
 
-##Initial Project Source
+##Code Sources
 
-[Jon Hilton](https://jonhilton.net/blazor-wasm-prerendering/)
+[Jon Hilton - Blazor WASM Project](https://jonhilton.net/blazor-wasm-prerendering/)
+
+[Chis Sainty - JWT Auth](https://chrissainty.com/securing-your-blazor-apps-authentication-with-clientside-blazor-using-webapi-aspnet-core-identity/)
 
 ## Usage
 

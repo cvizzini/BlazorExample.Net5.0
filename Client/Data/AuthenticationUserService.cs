@@ -34,6 +34,8 @@ namespace ExampleApp.Client.Data
         public async Task<AuthUser> Login(LoginModel model)
         {
             var tokenResponse = await _httpClient.Post<AuthUser>($"{ROUTE}login", model);
+            if (tokenResponse == null)
+                return tokenResponse;
             await _localStorageService.SetItemAsync("authToken", tokenResponse.Token);
             ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(tokenResponse.UserName);
 

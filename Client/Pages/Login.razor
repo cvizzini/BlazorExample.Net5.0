@@ -1,7 +1,9 @@
 ﻿@page "/login"
 @using ExampleApp.Shared.Models
 @using ExampleApp.Shared
+@using Client.Data
 @inject IAuthenticateUserService AuthenticationService
+@inject IAlertService AlertService
 @inject NavigationManager urlNavigationManager
 
 <h1>Login</h1>
@@ -23,14 +25,34 @@
         </div>
         <ValidationMessage For="@(() => user.Password)" />
     </div>    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" disabled="@loading" class="btn btn-primary">Submit</button>
     </div>
 </EditForm>
 
-@code { LoginModel user = new LoginModel();
+@code {
+    LoginModel user = new LoginModel();
+    private bool loading;
 
     protected async Task LogUserIn()
     {
-        var x = await AuthenticationService.Login(user);
-        Console.WriteLine(x.Token);
-    } }
+        AlertService.Clear();
+
+        loading = true;
+        try
+        {
+            var user = await AuthenticationService.Login(this.user);
+            if (user == null)
+            {
+                throw new Exception("User or password invalid");
+            }
+            urlNavigationManager.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+            loading = false;
+            StateHasChanged();
+        }
+
+    }
+}

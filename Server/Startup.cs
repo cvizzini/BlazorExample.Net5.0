@@ -54,7 +54,7 @@ namespace ExampleApp.Server
             services.AddScoped<IWeatherForecastService, WeatherForecastDataAccessLayer>();             
             services.AddTransient<IEmployee, EmployeeDataAccessLayer>();
             services.AddServerSideBlazor();
-
+            services.AddScoped<IAlertService, AlertService>();
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddResponseCompression(opts =>

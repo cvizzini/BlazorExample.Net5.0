@@ -1,4 +1,4 @@
-namespace ExampleApp.Shared.Models
+namespace ExampleApp.Client.Models
 {
     public class Alert
     {
@@ -8,13 +8,5 @@ namespace ExampleApp.Shared.Models
         public bool AutoClose { get; set; }
         public bool KeepAfterRouteChange { get; set; }
         public bool Fade { get; set; }
-    }
-
-    public enum AlertType
-    {
-        Success,
-        Error,
-        Info,
-        Warning
     }
 }
