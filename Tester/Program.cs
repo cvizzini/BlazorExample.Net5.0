@@ -1,6 +1,8 @@
-﻿using System;
+﻿using ExampleApp.Shared;
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace ExampleApp.Tester
@@ -10,15 +12,12 @@ namespace ExampleApp.Tester
         static async Task Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            var client = new HttpClient();
-            var token = await TokenHelper.GetAccessTokenAsync();
-            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.Token}");
-            var authorizedResponse = await client.GetAsync("http://localhost:5000/WeatherForecast");
 
-            var resultString = await authorizedResponse.Content.ReadAsStringAsync();
-
-            Console.WriteLine(resultString);     
+            var client = new HttpClient { BaseAddress = new Uri("http://localhost:5000") };
+            var token = await TokenHelper.GetAccessTokenAsync(client);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
+            var authorizedResponse = await client.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+            Console.WriteLine(authorizedResponse);
         }
     }
 }
