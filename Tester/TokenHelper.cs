@@ -21,12 +21,12 @@ namespace ExampleApp.Tester
         private const string Password = "D3monw0lf!";
         public const string BaseAddress = "/api/authenticate/login";
 
-        internal static async Task<AuthToken> GetAccessTokenAsync(HttpClient client)
+        internal static async Task<AuthUser> GetAccessTokenAsync(HttpClient client)
         {           
             var login = new LoginModel() { Username = Username, Password = Password };
             var tokenResponse = await client.PostAsJsonAsync(BaseAddress, login);
 
-            return await tokenResponse.Content.ReadAsAsync<AuthToken>(new[] { new JsonMediaTypeFormatter() });
+            return await tokenResponse.Content.ReadAsAsync<AuthUser>(new[] { new JsonMediaTypeFormatter() });
         }
     }
 }

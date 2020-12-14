@@ -10,7 +10,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleApp.Shared", "Shared
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleApp.Context", "Context\ExampleApp.Context.csproj", "{395FE954-AB01-444E-9461-6801F9365005}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleApp.Tester", "Tester\ExampleApp.Tester.csproj", "{71089387-8163-4745-94C7-800517E9771E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleApp.Tester", "Tester\ExampleApp.Tester.csproj", "{71089387-8163-4745-94C7-800517E9771E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{158BC3E4-F8EC-4BFC-8112-E893EFB3F29C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

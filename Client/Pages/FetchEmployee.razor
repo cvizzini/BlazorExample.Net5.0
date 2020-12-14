@@ -1,4 +1,5 @@
 ﻿@page "/fetchemployee"
+@attribute [Authorize]
 @using ExampleApp.Shared.Models
 @using ExampleApp.Shared
 @inject IEmployeeService EmployeeService
@@ -31,17 +32,18 @@ else
     <tbody>
         @foreach (var emp in empList)
         {
-<tr>
-    <td>@emp.EmployeeId</td>
-    <td>@emp.Name</td>
-    <td>@emp.Gender</td>
-    <td>@emp.Department</td>
-    <td>@emp.City</td>
-    <td>
-        <a href='/editemployee/@emp.EmployeeId'>Edit</a>  |
-        <a href='/delete/@emp.EmployeeId'>Delete</a>
-    </td>
-</tr>}
+        <tr>
+            <td>@emp.EmployeeId</td>
+            <td>@emp.Name</td>
+            <td>@emp.Gender</td>
+            <td>@emp.Department</td>
+            <td>@emp.City</td>
+            <td>
+                <a href='/editemployee/@emp.EmployeeId'>Edit</a>  |
+                <a href='/delete/@emp.EmployeeId'>Delete</a>
+            </td>
+        </tr>
+}
     </tbody>
 </table>}
 @code { Employee[] empList;

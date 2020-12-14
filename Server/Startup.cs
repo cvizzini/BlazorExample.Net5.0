@@ -6,6 +6,7 @@ using ExampleApp.Shared;
 using ExampleApp.Shared.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 
@@ -38,7 +40,7 @@ namespace ExampleApp.Server
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             //services.AddDbContext<EmployeeContext>(
             //    builder => builder.UseSqlite(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
-            services.AddDbContext<EmployeeContext>(options => options.UseSqlite(connectionString));
+            services.AddDbContext<EmployeeContext>(options => options.UseSqlite(connectionString), ServiceLifetime.Transient);
 
             using (var sp = services.BuildServiceProvider())
             {
@@ -49,8 +51,10 @@ namespace ExampleApp.Server
 
             InitialiseAuthenticationAndAuthorisation(services);
 
-            services.AddScoped<IWeatherForecastService, WeatherForecastDataAccessLayer>();
+            services.AddScoped<IWeatherForecastService, WeatherForecastDataAccessLayer>();             
             services.AddTransient<IEmployee, EmployeeDataAccessLayer>();
+            services.AddServerSideBlazor();
+            services.AddScoped<IAlertService, AlertService>();
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddResponseCompression(opts =>
