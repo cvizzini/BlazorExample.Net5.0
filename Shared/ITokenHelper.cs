@@ -5,6 +5,6 @@ namespace ExampleApp.Shared
 {
     public interface ITokenHelper
     {
-        Task<AuthToken> GetAccessTokenAsync();
+        Task<AuthUser> GetAccessTokenAsync();
     }
 }

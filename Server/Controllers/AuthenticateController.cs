@@ -1,4 +1,5 @@
-﻿using ExampleApp.Shared.Models;
+﻿using ExampleApp.Client.Data;
+using ExampleApp.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace ExampleApp.Server.Controllers
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IConfiguration _configuration;
 
-        public AuthenticateController(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public AuthenticateController(UserManager<ApplicationUser> userManager, IConfiguration configuration )
         {
             this.userManager = userManager;
             _configuration = configuration;
@@ -58,11 +59,16 @@ namespace ExampleApp.Server.Controllers
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );
 
-                return Ok(new
+                var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
+                var authUser = new AuthUser
                 {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
-                });
+                    Token = tokenValue,
+                    Expiration = token.ValidTo,
+                    UserName = user.UserName
+                };
+               
+
+                return Ok(authUser);
             }
             return Unauthorized();
         }

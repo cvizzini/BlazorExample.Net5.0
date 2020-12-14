@@ -19,13 +19,15 @@ namespace ExampleApp.Client.Data
         public const string BaseAddress = "/api/authenticate/login";
         private readonly HttpClient _httpClient;
 
-        public async Task<AuthToken> GetAccessTokenAsync()
+        public async Task<AuthUser> GetAccessTokenAsync()
         {
-
             var login = new LoginModel() { Username = Username, Password = Password };
             var tokenResponse = await _httpClient.PostAsJsonAsync(BaseAddress, login);
 
-            return await tokenResponse.Content.ReadAsAsync<AuthToken>(new[] { new JsonMediaTypeFormatter() });
+            return await tokenResponse.Content.ReadAsAsync<AuthUser>(new[] { new JsonMediaTypeFormatter() });
         }
     }
+
+
+
 }

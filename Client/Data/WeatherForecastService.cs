@@ -8,20 +8,17 @@ namespace ExampleApp.Client.Data
 {
     public class WeatherForecastService : IWeatherForecastService
     {
-        private readonly HttpClient _httpClient;
+        private readonly IHttpService _httpClient;
         private readonly ITokenHelper tokenHelper;
 
-        public WeatherForecastService(HttpClient httpClient, ITokenHelper tokenHelper)
+        public WeatherForecastService(IHttpService httpClient)
         {
-            _httpClient = httpClient;
-            this.tokenHelper = tokenHelper;
+            _httpClient = httpClient;            
         }
         
         public async Task<WeatherForecast[]> GetForecastAsync()
         {
-            var token = await tokenHelper.GetAccessTokenAsync();
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
-            return await _httpClient.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+              return await _httpClient.Get<WeatherForecast[]>("WeatherForecast");
         }
     }
 }
